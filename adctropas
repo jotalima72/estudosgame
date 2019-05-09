@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include "locale.h"
+void adc_tropas(char pais,char tropasJogador[], int tropastotais[], int num_tropas){
+	char paises[14] = {"ABCDEFGHIJKLMN"};	
+	int i, j, aux = 0;
+	for(i=0; i<14; i++){
+		if(tropasJogador[i] == pais ){
+			printf("Selecione o número de tropas: \n");
+			scanf(" %d", &aux);
+			break;
+		}
+		else if(paises[i] == pais){
+			printf("Esse país não é seu!\n");		
+			break;
+		}
+		else if(i == 13){
+			printf("País inválido!\n");
+			break;
+		}
+	}
+	for(i=0; i<14; i++){
+		if(paises[i] == pais){
+			break;
+		}
+	}
+	while(num_tropas>0){
+		if(aux>num_tropas || aux < 0)printf("Número de tropas inválido\n");
+		 else{
+			tropastotais[i] += aux;
+			num_tropas -= aux;
+			aux = 0;
+		}
+		if(num_tropas>0){
+			printf("Você ainda tem %d tropas! Selecione o país: \n", num_tropas);
+			scanf(" %c", &pais);
+			pais = toupper(pais);
+			for(i=0; i<14; i++){
+				if(tropasJogador[i] == pais ){
+					printf("Selecione o número de tropas: \n");
+					scanf(" %d", &aux);
+					break;
+				}
+				else if(paises[i] == pais){
+					printf("Esse país não é seu!\n");
+					break;
+				}
+				else if(i == 13){
+					printf("País inválido!\n");
+					break;
+				}
+			}
+			for(i=0; i<14; i++){
+				if(paises[i] == pais){
+					break;
+				}
+			}
+		}	
+	}
+}
+
+int main(){
+	setlocale(LC_ALL,"");
+	char pa = 'A';
+	int tropanum = 4, total[14] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	char paises1[14] = {"ABCDEFG"}, paises2[14] = {"HIJKLMN"};
+	adc_tropas(pa,paises1, total, tropanum);
+	for(tropanum=0;tropanum<14;tropanum++){
+		printf("%d\n", total[tropanum]);
+	}
+	return 0;
+}
