@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <locale.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+#include "wargame.h"
+
+
+int main(){
+	// iniciação de variaveis
+	char pais, paisestotais[] = {"ABCDEFGHIJKLMN"}, 
+	Jogador1[] = {"ABFGILM"}, Jogador2[] = {"CDEHJKN"};
+	int rodada = 0, cont = 0, tropatotal[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	num_paises1 = strlen(Jogador1), num_paises2 = strlen(Jogador2), aux;
+
+	//criar semente para a função rand 
+	srand((unsigned)time(NULL));
+
+	// ajeitar as strings para fazer printf corretamente e acentuado
+	setlocale(LC_ALL,"");
+	
+	//sorteia os paises do game
+	sorteiapaises(Jogador1, Jogador2);
+	
+	//wargame
+	present();
+	Sleep(1000);
+	
+	//mostra o mapa
+	printMapa(tropatotal);
+
+	//mostra os paises sorteados
+	printf("O jogador 1 está com os países:\n\t");
+	for(aux = 0; aux<num_paises1; aux++){
+		printf("%c; ", Jogador1[aux]);
+	}
+	Sleep(1000);
+	printf("\nO jogador 2 está com os países:\n\t");
+	for(aux = 0; aux<num_paises2; aux++){
+		printf("%c; ", Jogador2[aux]);
+	}
+	
+	while(num_paises1 >= 0 && num_paises2 >= 0){
+		Sleep(500);
+	
+		//checa de quem é a vez para mudar a rodada
+		if(vezdojogador(cont) == 1){
+		rodada++;
+		printf("\n\n\trodada %d!\n\n", rodada);
+		}
+		Sleep(500);
+	
+		//primeira rodada
+		if(rodada == 1){
+		printf("primeira rodada! Aloquem suas tropas!\nNessa rodada ninguém ataca.\n");
+		printf("Jogador 1!\nVocê tem %d tropas! Escolha o país: \n", num_paises1/2);
+		scanf(" %c", &pais);
+		pais = toupper(pais);
+		adc_tropas(pais, Jogador1, tropatotal, num_paises1/2);
+		
+		printMapa(tropatotal);
+		Sleep(1000);
+	
+		printf("O jogador 1 está com os países:\n\t");
+		for(aux = 0; aux<num_paises1; aux++){
+			printf("%c; ", Jogador1[aux]);
+		}
+		Sleep(1000);
+		printf("\nO jogador 2 está com os países:\n\t");
+		for(aux = 0; aux<num_paises2; aux++){
+			printf("%c; ", Jogador2[aux]);
+		}
+	
+		printf("\nJogador 2!\nVocê tem %d tropas! Escolha o país: \n", num_paises2/2);
+		scanf(" %c", &pais);
+		pais = toupper(pais);
+		adc_tropas(pais, Jogador2, tropatotal, num_paises2/2);
+		
+		printMapa(tropatotal);
+		}
+	
+		//rodadas seguintes
+		else{
+			printf("\tVez do jogador %d\n\n", vezdojogador(cont));
+			if(vezdojogador(cont) == 1){
+				printf("Seus países:\n\t");
+				for(aux = 0; aux<num_paises1; aux++){
+				printf("%c; ", Jogador1[aux]);
+				}
+				printf("\nVc tem %d tropas! Escolha um de seus países para reforçar:\n", num_paises1/2);
+				scanf(" %c", &pais);
+				pais = toupper(pais);
+				adc_tropas(pais, Jogador1, tropatotal, num_paises1/2);
+				printMapa(tropatotal);
+				ataque(Jogador1, Jogador2, paisestotais, tropatotal);
+				num_paises1 = strlen(Jogador1);
+				printMapa(tropatotal);
+			}
+			else{
+				printf("Seus países:\n\t");	
+				for(aux = 0; aux<num_paises2; aux++){
+				printf("%c; ", Jogador2[aux]);
+				}
+				printf("\nVc tem %d tropas! Escolha um de seus países para reforçar:\n", num_paises2/2);
+				scanf(" %c", &pais);
+				pais = toupper(pais);
+				adc_tropas(pais, Jogador2, tropatotal, num_paises2/2);
+				printMapa(tropatotal);
+				ataque(Jogador2, Jogador1, paisestotais, tropatotal);	
+			}
+				
+			
+			if(num_paises1 == 0 || num_paises2 == 0)break;
+			cont +=1;
+		}
+		if(num_paises1==0){
+			printf("\nParabéns jogador 2! você venceu!\n");
+		}
+		else if(num_paises2==0){
+			printf("\nParabéns jogador 1! você venceu!\n");
+		}
+	}
+	return 0;
+}
